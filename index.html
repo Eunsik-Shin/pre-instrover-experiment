@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>사운드 실험 데모</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .dropzone{border:1px dashed rgba(0,0,0,.2)}
+    .star{cursor:pointer;font-size:1.25rem;line-height:1}
+    .chip{display:inline-flex;align-items:center;border-radius:9999px;padding:.125rem .5rem;margin:.125rem .25rem;border:1px solid rgba(0,0,0,.1)}
+    .chip button{margin-left:.25rem}
+    details>summary::-webkit-details-marker{display:none}
+    details>summary{list-style:none}
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+  <header class="sticky top-0 z-20 backdrop-blur bg-white/70 border-b">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="text-2xl font-semibold">🎧 사운드 실험 데모</div>
+      <div class="ml-auto flex items-center gap-3 text-sm">
+        <label class="flex items-center gap-2">파일 기본 경로:
+          <input id="basePath" type="text" class="border rounded px-2 py-1 w-52" placeholder="./assets/" />
+        </label>
+        <button id="exportCsv" class="border rounded px-3 py-1">CSV 내보내기</button>
+        <button id="resetAll" class="border rounded px-3 py-1">초기화</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    <section class="mb-6">
+      <h2 class="text-lg font-semibold mb-2">실험 개요</h2>
+      <ul class="list-disc pl-5 space-y-1 text-sm leading-relaxed">
+        <li>각 소리와 비슷한 악기를 직접 찾습니다.</li>
+        <li>카테고리 태그 또는 검색어 입력으로 탐색할 수 있습니다.</li>
+        <li>악기명 왼쪽 ⭐️는 <b>들었던 악기 표기</b>나 <b>유사도</b> 등 자유롭게 사용하세요.</li>
+        <li>각 악기별 검색 시간은 <b>5분 제한</b>입니다. 타이머를 사용하세요.</li>
+        <li>구성: <b>(Category) &gt; (Subcategory) &gt; (Preset)</b></li>
+        <li>WAV 경로가 다르면 상단의 <b>파일 기본 경로</b>를 지정하거나 각 슬롯에 <b>드래그&드롭/업로드</b>로 대체하세요.</li>
+      </ul>
+      <div class="mt-4 flex items-center gap-3">
+        <input id="search" class="border rounded px-3 py-2 w-full" placeholder="검색: 카테고리/프리셋/파일/태그" />
+        <button id="clearSearch" class="border rounded px-3 py-2">지우기</button>
+      </div>
+    </section>
+
+    <section id="cards" class="space-y-6"></section>
+
+    <footer class="mt-12 text-xs text-gray-500">
+      <p>단일 HTML · 로컬스토리지에 평점/태그/노트/업로드/경로 저장 · GitHub Pages 배포</p>
+    </footer>
+  </main>
+
+<script>
+  const DATA = [
+    {
+      id: 'sound1', title: 'Sound 1', category: 'Pad', subcategory: 'Fast attack', preset: '',
+      files: [
+        { label: 'C2 · 1s (vel 80)', filename: 'metallic sweep_c2_1.wav' },
+        { label: 'C3 · 1s (vel 80)', filename: 'metallic sweep_c3_1.wav' },
+        { label: 'C4 · 1s (vel 80)', filename: 'metallic sweep_c4_1.wav' },
+        { label: 'C5 · 1s (vel 80)', filename: 'metallic sweep_c5_1.wav' },
+        { label: 'C6 · 1s (vel 80)', filename: 'metallic sweep_c6_1.wav' },
+        { label: 'C4 · 3s (vel 127)', filename: 'Metallic_Sweeps_long_1.wav', long: true },
+      ]
+    },
+    {
+      id: 'sound2', title: 'Sound 2', category: 'Strings', subcategory: 'All', preset: '',
+      files: [
+        { label: 'C2 · 1s (vel 80)', filename: 'Motion_glory_wave_c2_2.wav' },
+        { label: 'C3 · 1s (vel 80)', filename: 'Motion_glory_wave_c3_2.wav' },
+        { label: 'C4 · 1s (vel 80)', filename: 'Motion_glory_wave_c4_2.wav' },
+        { label: 'C5 · 1s (vel 80)', filename: 'Motion_glory_wave_c5_2.wav' },
+        { label: 'C6 · 1s (vel 80)', filename: 'Motion_glory_wave_c6_2.wav' },
+        { label: 'C4 · 3s (vel 127)', filename: 'Motion_glory_wave_long.wav', long: true },
+      ]
+    },
+    {
+      id: 'sound3', title: 'Sound 3', category: 'Mallet', subcategory: 'Layered', preset: '',
+      files: [
+        { label: 'C2 · 1s (vel 80)', filename: 'Light_mallet_echo_layers_c2_1.wav' },
+        { label: 'C3 · 1s (vel 80)', filename: 'Light_mallet_echo_layers_c3_1.wav' },
+        { label: 'C4 · 1s (vel 80)', filename: 'Light_mallet_echo_layers_c4_1.wav' },
+        { label: 'C5 · 1s (vel 80)', filename: 'Light_mallet_echo_layers_c5_1.wav' },
+        { label: 'C6 · 1s (vel 80)', filename: 'Light_mallet_echo_layers_c6_1.wav' },
+        { label: 'C4 · 3s (vel 127)', filename: 'Light_mallet_echo_wave_long.wav', long: true },
+      ]
+    },
+    {
+      id: 'sound4', title: 'Sound 4', category: 'Synth', subcategory: 'Mono', preset: '',
+      files: [
+        { label: 'C2 · 1s (vel 80)', filename: 'Limbo_c2_1.wav' },
+        { label: 'C3 · 1s (vel 80)', filename: 'Limbo_c3_1.wav' },
+        { label: 'C4 · 1s (vel 80)', filename: 'Limbo_c4_1.wav' },
+        { label: 'C5 · 1s (vel 80)', filename: 'Limbo_c5_1.wav' },
+        { label: 'C6 · 1s (vel 80)', filename: 'Limbo_c6_1.wav' },
+        { label: 'C4 · 3s (vel 127)', filename: 'Limbo_long_2.wav', long: true },
+      ]
+    },
+    {
+      id: 'sound5', title: 'Sound 5', category: 'Keys', subcategory: 'Layered', preset: '',
+      files: [
+        { label: 'C2 · 1s (vel 80)', filename: 'Lonely_beacon_c2_1.wav' },
+        { label: 'C3 · 1s (vel 80)', filename: 'Lonely_beacon_c3_1.wav' },
+        { label: 'C4 · 1s (vel 80)', filename: 'Lonely_beacon_c4_1.wav' },
+        { label: 'C5 · 1s (vel 80)', filename: 'Lonely_beacon_c5_1.wav' },
+        { label: 'C6 · 1s (vel 80)', filename: 'Lonely_beacon_c6_1.wav' },
+        { label: 'C4 · 3s (vel 127)', filename: 'Lonely_beacon_long_1.wav', long: true },
+      ]
+    }
+  ];
+
+  const LS_KEY = 'sound-demo-state-v1';
+  const state = loadState();
+  function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{} }catch{ return {} } }
+  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)) }
+
+  const $ = sel => document.querySelector(sel);
+  const e = (tag, props={}, ...children)=>{ const el=document.createElement(tag); Object.assign(el, props); for(const c of children){ if(c==null) continue; el.append(c.nodeType?c:document.createTextNode(c)); } return el; };
+  const fmt = n => n.toString().padStart(2,'0');
+  function encPath(base, name){ const b = base?.trim(); const joined = (b? (b.endsWith('/')? b:b+'/') : '') + name; return encodeURI(joined); }
+  function getSoundState(id){ state[id] ||= { rating:0, tags:[], note:'', uploads:{}, timerStart:null }; return state[id] }
+
+  const timerUpdateFns = [];
+  setInterval(()=>{ for(const fn of timerUpdateFns){ try{ fn() }catch{} } }, 1000);
+
+  const cards = $('#cards');
+  const basePathInput = $('#basePath');
+  if(!state.basePath){ state.basePath = './assets/'; saveState(); }
+  basePathInput.value = state.basePath || './assets/';
+  basePathInput.addEventListener('change', ()=>{ state.basePath = basePathInput.value; saveState(); render(); });
+
+  function render(){
+    cards.innerHTML = '';
+    timerUpdateFns.length = 0;
+    const q = ($('#search').value||'').toLowerCase().trim();
+    for(const s of DATA){
+      const st = getSoundState(s.id);
+      const fileNames = s.files.map(f=>f.filename).join(' ');
+      const hay = [s.title, s.category, s.subcategory, s.preset, fileNames, ...(st.tags||[])].join(' ').toLowerCase();
+      if(q && !hay.includes(q)) continue;
+
+      const card = e('section', { className:'rounded-2xl border p-4 shadow-sm' });
+
+      const stars = e('div', { className:'flex items-center gap-1' });
+      for(let i=1;i<=5;i++){
+        const b = e('button', { className:'star', title:`별 ${i}` }, i <= (st.rating||0) ? '★':'☆');
+        b.addEventListener('click', ()=>{ st.rating = i; saveState(); render(); });
+        stars.append(b);
+      }
+      const path = e('div', { className:'text-sm text-gray-600' }, `${s.category} › ${s.subcategory}${s.preset? ' › '+s.preset:''}`);
+      const title = e('div', { className:'text-lg font-semibold' }, s.title);
+
+      const tagWrap = e('div', { className:'mt-2 text-sm' });
+      const tagsBox = e('div');
+      function drawTags(){
+        tagsBox.innerHTML='';
+        for(const t of st.tags){
+          const chip = e('span', { className:'chip' }, t, e('button', { title:'삭제' }, '×'));
+          chip.querySelector('button').addEventListener('click', ()=>{ st.tags = st.tags.filter(x=>x!==t); saveState(); drawTags(); });
+          tagsBox.append(chip);
+        }
+      }
+      drawTags();
+      const tagInput = e('input', { className:'border rounded px-2 py-1 text-sm', placeholder:'태그 입력 후 Enter' });
+      tagInput.addEventListener('keydown', ev=>{
+        if(ev.key==='Enter'){
+          const v = tagInput.value.trim(); if(!v) return;
+          st.tags ||= []; if(!st.tags.includes(v)) st.tags.push(v);
+          tagInput.value=''; saveState(); drawTags();
+        }
+      });
+      tagWrap.append(e('div', { className:'mb-1 text-gray-600' }, '태그'), tagsBox, tagInput);
+
+      const timerBox = e('div', { className:'ml-auto flex items-center gap-2' });
+      const timerText = e('span', { className:'font-mono' });
+      const timerBtn = e('button', { className:'border rounded px-2 py-1 text-sm' }, '5분 시작');
+      const timerStop = e('button', { className:'border rounded px-2 py-1 text-sm' }, '정지');
+      timerBox.append(timerText, timerBtn, timerStop);
+      timerBtn.addEventListener('click', ()=>{ st.timerStart = Date.now(); saveState(); });
+      timerStop.addEventListener('click', ()=>{ st.timerStart = null; saveState(); updateTimer(); });
+
+      function updateTimer(){
+        if(!st.timerStart){ timerText.textContent='05:00'; return; }
+        const elapsed = Math.max(0, Math.floor((Date.now()-st.timerStart)/1000));
+        const remain = Math.max(0, 300 - elapsed);
+        const mm = Math.floor(remain/60), ss = remain%60;
+        timerText.textContent = `${fmt(mm)}:${fmt(ss)}`;
+        timerText.className = remain===0 ? 'font-mono text-red-600' : 'font-mono';
+      }
+      updateTimer();
+      timerUpdateFns.push(updateTimer);
+
+      const header = e('div', { className:'flex items-start gap-3 mb-3' }, stars, title, e('div',{className:'grow'}), path, timerBox);
+
+      const list = e('div', { className:'grid grid-cols-1 md:grid-cols-2 gap-3' });
+
+      const playSeq = e('button', { className:'border rounded px-3 py-2 text-sm mb-2' }, '피치 순서 재생 (C2→C6)');
+      let seqAbort = false;
+      playSeq.addEventListener('click', async()=>{
+        seqAbort = false;
+        const nodes = [...list.querySelectorAll('audio[data-short="1"]')];
+        for(const a of nodes){
+          if(seqAbort) break;
+          try{
+            await a.play();
+            await new Promise(res=>a.addEventListener('ended', res, { once:true }));
+          }catch{}
+        }
+      });
+      const stopSeq = e('button', { className:'border rounded px-3 py-2 text-sm mb-2 ml-2' }, '정지');
+      stopSeq.addEventListener('click', ()=>{ seqAbort = true; for(const a of list.querySelectorAll('audio')){ a.pause(); a.currentTime=0; } });
+
+      const note = e('textarea', { className:'border rounded p-2 w-full text-sm', rows:2, placeholder:'메모 / 유사도 기준 등' });
+      note.value = st.note || '';
+      note.addEventListener('input', ()=>{ st.note = note.value; saveState(); });
+
+      for(const f of s.files){
+        const row = e('div', { className:'border rounded-lg p-3 flex flex-col gap-2' });
+        const fn = (st.uploads?.[f.filename]?.name) || f.filename;
+        const label = e('div', { className:'flex items-center justify-between' },
+          e('div', { className:'font-medium' }, f.label),
+          e('div', { className:'text-xs text-gray-600' }, fn)
+        );
+
+        const audio = e('audio', { controls:true });
+        audio.dataset.short = f.long ? '0' : '1';
+        setAudioSrc(audio, s.id, f.filename);
+
+        const dz = e('label', { className:'dropzone rounded px-3 py-2 text-xs text-gray-600 cursor-pointer' }, '여기에 파일 드롭 또는 클릭하여 업로드');
+        const fileInput = e('input', { type:'file', accept:'.wav,audio/wav', style:'display:none' });
+        dz.append(fileInput);
+        dz.addEventListener('dragover', ev=>{ ev.preventDefault(); dz.classList.add('bg-gray-50'); });
+        dz.addEventListener('dragleave', ()=> dz.classList.remove('bg-gray-50'));
+        dz.addEventListener('drop', ev=>{ ev.preventDefault(); dz.classList.remove('bg-gray-50'); if(ev.dataTransfer.files?.[0]) applyUpload(ev.dataTransfer.files[0]); });
+        dz.addEventListener('click', ()=> fileInput.click());
+        fileInput.addEventListener('change', ()=>{ if(fileInput.files?.[0]) applyUpload(fileInput.files[0]); });
+
+        function applyUpload(file){
+          const url = URL.createObjectURL(file);
+          st.uploads ||= {}; st.uploads[f.filename] = { name:file.name, url };
+          saveState(); setAudioSrc(audio, s.id, f.filename);
+        }
+
+        row.append(label, audio, dz);
+        list.append(row);
+      }
+
+      card.append(header, e('div', {className:'flex items-center mb-2'}, playSeq, stopSeq), list, e('div',{className:'mt-3'}, note), e('div',{className:'mt-2'}, tagWrap));
+      cards.append(card);
+    }
+  }
+
+  function setAudioSrc(audioEl, soundId, filename){
+    const st = getSoundState(soundId);
+    const up = st.uploads?.[filename];
+    if(up?.url){ audioEl.src = up.url; return; }
+    const base = state.basePath || './assets/';
+    audioEl.src = encPath(base, filename);
+  }
+
+  $('#search').addEventListener('input', render);
+  $('#clearSearch').addEventListener('click', ()=>{ $('#search').value=''; render(); });
+
+  $('#exportCsv').addEventListener('click', ()=>{
+    const rows = [['id','title','category','subcategory','rating','tags','note','filename','override']];
+    for(const s of DATA){
+      const st = getSoundState(s.id);
+      for(const f of s.files){
+        const up = st.uploads?.[f.filename];
+        rows.push([
+          s.id, s.title, s.category, s.subcategory, st.rating||0, (st.tags||[]).join('|'), (st.note||'').replace(/\n/g,' '), f.filename, up? up.name:''
+        ]);
+      }
+    }
+    const csv = rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sound_experiment.csv';
+    a.click();
+  });
+
+  $('#resetAll').addEventListener('click', ()=>{
+    if(!confirm('모든 저장 데이터(별점/태그/노트/업로드/경로)를 초기화할까요?')) return;
+    localStorage.removeItem(LS_KEY); location.reload();
+  });
+
+  for(const s of DATA){ getSoundState(s.id); }
+  saveState();
+  render();
+</script>
+</body>
+</html>

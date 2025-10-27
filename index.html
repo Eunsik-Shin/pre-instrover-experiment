@@ -42,7 +42,7 @@
     <section id="cards" class="space-y-6"></section>
 
     <footer class="mt-12 text-xs text-gray-500">
-      <p>GitHub Pages · IndexedDB(로컬) 업로드 보존 · 세션 메모</p>
+      <p>GitHub Pages · All rights reserved</p>
     </footer>
   </main>
 
@@ -233,7 +233,7 @@
       stopSeq.addEventListener('click', ()=>{ seqAbort = true; for(const a of list.querySelectorAll('audio')){ a.pause(); a.currentTime=0; } });
 
       // 메모(세션 전용)
-      const note = e('textarea', { className:'border rounded p-2 w-full text-sm', rows:2, placeholder:'메모(세션 전용, 새로고침 시 사라짐)' });
+      const note = e('textarea', { className:'border rounded p-2 w-full text-sm', rows:2, placeholder:'메모' });
 
       for(const f of s.files){
         const row = e('div', { className:'border rounded-lg p-3 flex flex-col gap-2' });

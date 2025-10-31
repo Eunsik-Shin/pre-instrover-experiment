@@ -49,45 +49,45 @@
 <script>
   // ---------- 데이터 ----------
   const DATA = [
-    { id:'sound1', title:'Sound 1', category:'Pad', subcategory:'Fast attack', preset:'', files:[
-      { label:'C2 (vel 80)', filename:'metallic_sweep_c2_1.wav' },
-      { label:'C3 (vel 80)', filename:'metallic_sweep_c3_1.wav' },
-      { label:'C4 (vel 80)', filename:'metallic_sweep_c4_1.wav' },
-      { label:'C5 (vel 80)', filename:'metallic_sweep_c5_1.wav' },
-      { label:'C6 (vel 80)', filename:'metallic_sweep_c6_1.wav' },
-      { label:'C4 (vel 127)', filename:'Metallic_Sweeps_long_1.wav', long:true },
+    { id:'sound1', title:'Sound 1', category:'Mallets', subcategory:'Bell', preset:'', files:[
+      { label:'C2 (vel 80)', filename:'Glitch_Mallet_C2_80_1s.wav' },
+      { label:'C3 (vel 80)', filename:'Glitch_Mallet_C3_80_1s.wav' },
+      { label:'C4 (vel 80)', filename:'Glitch_Mallet_C4_80_1s.wav' },
+      { label:'C5 (vel 80)', filename:'Glitch_Mallet_C5_80_1s.wav' },
+      { label:'C6 (vel 80)', filename:'Glitch_Mallet_C6_80_1s.wav' },
+      { label:'C4 (vel 127)', filename:'Glitch_Mallet_C4_127_3s.wav', long:true },
     ]},
-    { id:'sound2', title:'Sound 2', category:'Strings', subcategory:'All', preset:'', files:[
-      { label:'C2 (vel 80)', filename:'Motion_glory_wave_c2_2.wav' },
-      { label:'C3 (vel 80)', filename:'Motion_glory_wave_c3_2.wav' },
-      { label:'C4 (vel 80)', filename:'Motion_glory_wave_c4_2.wav' },
-      { label:'C5 (vel 80)', filename:'Motion_glory_wave_c5_2.wav' },
-      { label:'C6 (vel 80)', filename:'Motion_glory_wave_c6_2.wav' },
-      { label:'C4 (vel 127)', filename:'Motion_glory_wave_long.wav', long:true },
+    { id:'sound2', title:'Sound 2', category:'Pads', subcategory:'Fast Attack', preset:'', files:[
+      { label:'C2 (vel 80)', filename:'Spacey_Echo_Bells_C2_80_1s.wav' },
+      { label:'C3 (vel 80)', filename:'Spacey_Echo_Bells_C3_80_1s.wav' },
+      { label:'C4 (vel 80)', filename:'Spacey_Echo_Bells_C4_80_1s.wav' },
+      { label:'C5 (vel 80)', filename:'Spacey_Echo_Bells_C5_80_1s.wav' },
+      { label:'C6 (vel 80)', filename:'Spacey_Echo_Bells_C6_80_1s.wav' },
+      { label:'C4 (vel 127)', filename:'Spacey_Echo_Bells_C4_127_3s.wav', long:true },
     ]},
-    { id:'sound3', title:'Sound 3', category:'Mallet', subcategory:'Layered', preset:'', files:[
-      { label:'C2 (vel 80)', filename:'Light_mallet_echo_layers_c2_1.wav' },
-      { label:'C3 (vel 80)', filename:'Light_mallet_echo_layers_c3_1.wav' },
-      { label:'C4 (vel 80)', filename:'Light_mallet_echo_layers_c4_1.wav' },
-      { label:'C5 (vel 80)', filename:'Light_mallet_echo_layers_c5_1.wav' },
-      { label:'C6 (vel 80)', filename:'Light_mallet_echo_layers_c6_1.wav' },
-      { label:'C4 (vel 127)', filename:'Light_mallet_echo_wave_long.wav', long:true },
+    { id:'sound3', title:'Sound 3', category:'Drums', subcategory:'Electronic', preset:'', files:[
+      { label:'C2 (vel 80)', filename:'Kick_Synth_pattern_C2_80_1s.wav' },
+      { label:'C3 (vel 80)', filename:'Kick_Synth_pattern_C3_80_1s.wav' },
+      { label:'C4 (vel 80)', filename:'Kick_Synth_pattern_C4_80_1s.wav' },
+      { label:'C5 (vel 80)', filename:'Kick_Synth_pattern_C5_80_1s.wav' },
+      { label:'C6 (vel 80)', filename:'Kick_Synth_pattern_C6_80_1s.wav' },
+      { label:'C4 (vel 127)', filename:'Kick_Synth_pattern_C4_127_3s.wav', long:true },
     ]},
-    { id:'sound4', title:'Sound 4', category:'Synth', subcategory:'Mono', preset:'', files:[
-      { label:'C2 (vel 80)', filename:'Limbo_c2_1.wav' },
-      { label:'C3 (vel 80)', filename:'Limbo_c3_1.wav' },
-      { label:'C4 (vel 80)', filename:'Limbo_c4_1.wav' },
-      { label:'C5 (vel 80)', filename:'Limbo_c5_1.wav' },
-      { label:'C6 (vel 80)', filename:'Limbo_c6_1.wav' },
-      { label:'C4 (vel 127)', filename:'Limbo_long_2.wav', long:true },
+    { id:'sound4', title:'Sound 4', category:'Bass', subcategory:'Short', preset:'', files:[
+      { label:'C2 (vel 80)', filename:'Unison_Saw_Bass_C2_80_1s.wav' },
+      { label:'C3 (vel 80)', filename:'Unison_Saw_Bass_C3_80_1s.wav' },
+      { label:'C4 (vel 80)', filename:'Unison_Saw_Bass_C4_80_1s.wav' },
+      { label:'C5 (vel 80)', filename:'Unison_Saw_Bass_C5_80_1s.wav' },
+      { label:'C6 (vel 80)', filename:'Unison_Saw_Bass_C6_80_1s.wav' },
+      { label:'C4 (vel 127)', filename:'Unison_Saw_Bass_C4_127_3s.wav', long:true },
     ]},
-    { id:'sound5', title:'Sound 5', category:'Keys', subcategory:'Layered', preset:'', files:[
-      { label:'C2 (vel 80)', filename:'Lonely_beacon_c2_1.wav' },
-      { label:'C3 (vel 80)', filename:'Lonely_beacon_c3_1.wav' },
-      { label:'C4 (vel 80)', filename:'Lonely_beacon_c4_1.wav' },
-      { label:'C5 (vel 80)', filename:'Lonely_beacon_c5_1.wav' },
-      { label:'C6 (vel 80)', filename:'Lonely_beacon_c6_1.wav' },
-      { label:'C4 (vel 127)', filename:'Lonely_beacon_long_1.wav', long:true },
+    { id:'sound5', title:'Sound 5', category:'Strings', subcategory:'All', preset:'', files:[
+      { label:'C2 (vel 80)', filename:'Mellotron_Violins_C2_80_1s.wav' },
+      { label:'C3 (vel 80)', filename:'Mellotron_Violins_C3_80_1s.wav' },
+      { label:'C4 (vel 80)', filename:'Mellotron_Violins_C4_80_1s.wav' },
+      { label:'C5 (vel 80)', filename:'Mellotron_Violins_C5_80_1s.wav' },
+      { label:'C6 (vel 80)', filename:'Mellotron_Violins_C6_80_1s.wav' },
+      { label:'C4 (vel 127)', filename:'Mellotron_Violins_C4_127_3s.wav', long:true },
     ]},
   ];
 

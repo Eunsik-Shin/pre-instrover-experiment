@@ -262,30 +262,33 @@
         // 일시정지 시 재생점 0으로 리셋(ended 제외)
         audio.addEventListener('pause', ()=>{ if(!audio.ended) audio.currentTime = 0; });
 
-        // 업로드(드롭/클릭) → IndexedDB에 영구 저장(이 브라우저)
-        const dz = e('label', { className:'dropzone rounded px-3 py-2 text-xs text-gray-600 cursor-pointer' }, '여기에 파일 드롭 또는 클릭하여 업로드');
-        const fileInput = e('input', { type:'file', accept:'.wav,audio/wav', style:'display:none' });
-        dz.append(fileInput);
-        dz.addEventListener('dragover', ev=>{ ev.preventDefault(); dz.classList.add('bg-gray-50'); });
-        dz.addEventListener('dragleave', ()=> dz.classList.remove('bg-gray-50'));
-        dz.addEventListener('drop', async ev=>{
-          ev.preventDefault(); dz.classList.remove('bg-gray-50');
-          const file = ev.dataTransfer.files?.[0];
-          if(file){ await applyUpload(file); }
-        });
-        dz.addEventListener('click', ()=> fileInput.click());
-        fileInput.addEventListener('change', async ()=>{ const f0=fileInput.files?.[0]; if(f0){ await applyUpload(f0); } });
+        // // 업로드(드롭/클릭) → IndexedDB에 영구 저장(이 브라우저)
+        // const dz = e('label', { className:'dropzone rounded px-3 py-2 text-xs text-gray-600 cursor-pointer' }, '여기에 파일 드롭 또는 클릭하여 업로드');
+        // const fileInput = e('input', { type:'file', accept:'.wav,audio/wav', style:'display:none' });
+        // dz.append(fileInput);
+        // dz.addEventListener('dragover', ev=>{ ev.preventDefault(); dz.classList.add('bg-gray-50'); });
+        // dz.addEventListener('dragleave', ()=> dz.classList.remove('bg-gray-50'));
+        // dz.addEventListener('drop', async ev=>{
+        //   ev.preventDefault(); dz.classList.remove('bg-gray-50');
+        //   const file = ev.dataTransfer.files?.[0];
+        //   if(file){ await applyUpload(file); }
+        // });
+        // dz.addEventListener('click', ()=> fileInput.click());
+        // fileInput.addEventListener('change', async ()=>{ const f0=fileInput.files?.[0]; if(f0){ await applyUpload(f0); } });
 
-        async function applyUpload(file){
-          try{
-            const key = `${s.id}/${f.filename}`;
-            // 왜: 서버가 아닌 브라우저 DB에 Blob 저장
-            await idbSet(key, file);
-            await setAudioSrc(audio, s.id, f.filename);
-          }catch(e){ alert('업로드를 저장할 수 없습니다(브라우저 제한). GitHub assets 사용을 고려하세요.'); }
-        }
+        // async function applyUpload(file){
+        //   try{
+        //     const key = `${s.id}/${f.filename}`;
+        //     // 왜: 서버가 아닌 브라우저 DB에 Blob 저장
+        //     await idbSet(key, file);
+        //     await setAudioSrc(audio, s.id, f.filename);
+        //   }catch(e){ alert('업로드를 저장할 수 없습니다(브라우저 제한). GitHub assets 사용을 고려하세요.'); }
+        // }
 
-        row.append(label, audio, dz);
+        // row.append(label, audio, dz);
+        
+        // 업로드 UI 제거: 미리 넣어둔 파일만 재생
+        row.append(label, audio);
         list.append(row);
       }
 

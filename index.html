@@ -211,7 +211,7 @@
   async function render(){
     cards.innerHTML = '';
     for(const s of DATA){
-      const card = e('section', { className:'rounded-2xl border p-4 shadow-sm' });
+      const card = e('section', { className:'rounded-2xl border p-4 shadow-sm' + (s.id!=='sound0' ? ' bg-sky-50' : '') });
 
       const path = e('div', { className:'text-sm text-gray-600' }, `${s.category} › ${s.subcategory}${s.preset? ' › '+s.preset:''}`);
       const title = e('div', { className:'text-lg font-semibold' }, s.title);
